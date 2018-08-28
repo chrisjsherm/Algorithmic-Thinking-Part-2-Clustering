@@ -35,7 +35,8 @@ def closest_pair_strip(cluster_list, horiz_center, half_width):
     the specified strip (the pair of indices should be in ascending order).
 
     @param list List of Cluster objects.
-    @param float Horizontal position of the center line for a vertical strip.
+    @param float Horizontal position of the two points in the middle of the 
+        cluster.
     @param float Maximal distance of any point in the strip from horiz_center.
 
     @return tuple (dist, idx1, idx2) Dist is the distance between the closest
@@ -63,7 +64,7 @@ def closest_pair_strip(cluster_list, horiz_center, half_width):
     # the two y-coordinates will be bounded by a height of 2*min_distance and
     # width of 1*min_distance.
     for idx_u in range(len_k - 1):
-        for idx_v in range(min(idx_u + 4, len_k)):
+        for idx_v in range(idx_u + 1, min(idx_u + 4, len_k)):
             dist = strip_arr[idx_u][1].distance(strip_arr[idx_v][1])
             if dist < d_i_j[0]:
                 d_i_j = (dist, strip_arr[idx_u][0], strip_arr[idx_v][0])
@@ -83,7 +84,33 @@ def fast_closest_pair(cluster_list):
     @return tuple (dist, idx1, idx2) Dist is the distance between the closest
       pair in the cluster_list parameter cluster_list[idx1], cluster_list[idx2].
     """
-    pass
+    list_len = len(cluster_list)
+
+    # If there are less than four points, use brute force algorithm.
+    if list_len <= 3:
+        return slow_closest_pair(cluster_list)
+
+    # Identify the middle index of the cluster list.
+    middle_idx = int(round(list_len / 2))
+
+    # Calculate the closest pair on the left half of the list.
+    closest_pair_left = fast_closest_pair(cluster_list[0:middle_idx - 1])
+
+    # Calculate the closest pair on the right half of the list.
+    closest_pair_right = fast_closest_pair(
+        cluster_list[middle_idx:list_len - 1])
+    # Adjust indices on the right side of list.
+    closest_pair_right = (
+        closest_pair_right[0], closest_pair_right[1] + middle_idx, closest_pair_right[2] + middle_idx)
+
+    closest_pair = min(
+        [closest_pair_left, closest_pair_right], key=lambda x: x[0])
+    horiz_center = (cluster_list[middle_idx - 1].horiz_center() +
+                    cluster_list[middle_idx].horiz_center()) / 2
+    print('Closest pair distance:', closest_pair[0])
+    closest_pair = min([closest_pair, closest_pair_strip(
+        cluster_list, horiz_center, closest_pair[0])], key=lambda x: x[0])
+    return closest_pair
 
 
 def merge_sort(arr, left, right, comparison_func):
