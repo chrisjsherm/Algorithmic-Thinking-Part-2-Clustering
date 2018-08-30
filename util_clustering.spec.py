@@ -2,10 +2,9 @@
 Test suite for the clustering utility.
 """
 import unittest
-import util_clustering
+import math
 from alg_cluster import Cluster
 import util_clustering
-import math
 
 
 class TestUtilClustering(unittest.TestCase):
@@ -30,7 +29,7 @@ class TestUtilClustering(unittest.TestCase):
 
     def test_closest_pair_strip(self):
         self.assertEqual(util_clustering.closest_pair_strip(
-            self._cluster_list, -1, 2), (2, -1, -1))
+            self._cluster_list, -1, 2), (math.sqrt(8), 1, 2))
 
         cluster1 = Cluster([51121, 51155, 51161], -7, 3, 600, .2)
         cluster2 = Cluster([51059, 51013, 51107], -1, 1, 800, .3)
@@ -39,7 +38,7 @@ class TestUtilClustering(unittest.TestCase):
         cluster5 = Cluster([32001, 32013, 32031], 4, 6, 400, .1)
         cluster_list_2 = [cluster1, cluster2, cluster3, cluster4, cluster5]
         self.assertEqual(util_clustering.closest_pair_strip(
-            cluster_list_2, 2, math.sqrt(2)), (1.0, 3, 2))
+            cluster_list_2, 2, math.sqrt(2)), (1.0, 2, 3))
 
     def test_fast_closest_pair(self):
         self.assertEqual(util_clustering.fast_closest_pair(

@@ -55,19 +55,20 @@ def closest_pair_strip(cluster_list, horiz_center, half_width):
     # Sort strip_arr by y-coordinates.
     merge_sort(strip_arr, 0, len_k - 1, compare_y)
 
-    min_distance = half_width
-    d_i_j = (min_distance, -1, -1)
+    d_i_j = (float('inf'), -1, -1)
     # Pick all points one-by-one and compare to the distance from the adjacent
     # point until the difference between y-coordinates/vert_center is smaller
     # than the minimum distance.
     # The loop will run at most six times due to the fact the distance between
-    # the two y-coordinates will be bounded by a height of 2*min_distance and
-    # width of 1*min_distance.
+    # the two y-coordinates will be bounded by a height of 2*half_width and
+    # width of 1*half_width.
     for idx_u in range(len_k - 1):
         for idx_v in range(idx_u + 1, min(idx_u + 4, len_k)):
             dist = strip_arr[idx_u][1].distance(strip_arr[idx_v][1])
             if dist < d_i_j[0]:
-                d_i_j = (dist, strip_arr[idx_u][0], strip_arr[idx_v][0])
+                temp_sorted_idx = [strip_arr[idx_u][0], strip_arr[idx_v][0]]
+                temp_sorted_idx.sort()
+                d_i_j = (dist, temp_sorted_idx[0], temp_sorted_idx[1])
 
     return d_i_j
 
