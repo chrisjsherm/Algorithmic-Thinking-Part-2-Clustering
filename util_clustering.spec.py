@@ -27,6 +27,20 @@ class TestUtilClustering(unittest.TestCase):
         self.assertEqual(util_clustering.slow_closest_pair(
             self._cluster_list), (math.sqrt(8), 0, 1))
 
+        cluster_list_2 = [Cluster(set([]), 0.38, 0.26, 1, 0),
+                          Cluster(set([]), 0.42, 0.03, 1, 0),
+                          Cluster(set([]), 0.48, 0.23, 1, 0),
+                          Cluster(set([]), 0.8, 0.65, 1, 0),
+                          Cluster(set([]), 0.95, 0.85, 1, 0),
+                          Cluster(set([]), 0.97, 0.61, 1, 0)]
+        self.assertEqual(util_clustering.slow_closest_pair(
+            cluster_list_2), (0.10440306508910548, 0, 2))
+
+        cluster_list_3 = [Cluster(set([]), 0.38, 0.26, 1, 0),
+                          Cluster(set([]), 0.42, 0.03, 1, 0)]
+        self.assertEqual(util_clustering.slow_closest_pair(
+            cluster_list_3), (0.23345235059857505, 0, 1))
+
     def test_closest_pair_strip(self):
         self.assertEqual(util_clustering.closest_pair_strip(
             self._cluster_list, -1, 2), (math.sqrt(8), 1, 2))
@@ -52,6 +66,15 @@ class TestUtilClustering(unittest.TestCase):
         cluster_list_2 = [cluster1, cluster2, cluster3, cluster4, cluster5]
         self.assertEqual(util_clustering.fast_closest_pair(
             cluster_list_2), (1.0, 2, 3))
+
+        cluster_list_3 = [Cluster(set([]), 0.38, 0.26, 1, 0),
+                          Cluster(set([]), 0.42, 0.03, 1, 0),
+                          Cluster(set([]), 0.48, 0.23, 1, 0),
+                          Cluster(set([]), 0.8, 0.65, 1, 0),
+                          Cluster(set([]), 0.95, 0.85, 1, 0),
+                          Cluster(set([]), 0.97, 0.61, 1, 0)]
+        self.assertEqual(util_clustering.fast_closest_pair(
+            cluster_list_3), (0.10440306508910548, 0, 2))
 
     def test_merge(self):
         arr1 = [11, 12, 13, 5, 6, 7]

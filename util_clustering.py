@@ -1,7 +1,6 @@
 """
 Clustering utility for Rice University Algorithmic Thinking Part II: Project 3.
 """
-from alg_cluster import Cluster
 
 
 def slow_closest_pair(cluster_list):
@@ -42,7 +41,7 @@ def closest_pair_strip(cluster_list, horiz_center, half_width):
     @return tuple (dist, idx1, idx2) Dist is the distance between the closest
       pair of clusters in the strip array.
     """
-    # Build an array, strip_arr, that contains points closer than half_width to,
+    # Build an array, strip_arr, that contains points closer than half_width to
     # horiz_center, the line passing through the middle point.
     # Maintain the original index in the cluster list as part of each item
     # within strip_arr in order to return this value.
@@ -60,7 +59,7 @@ def closest_pair_strip(cluster_list, horiz_center, half_width):
     # point until the difference between y-coordinates/vert_center is smaller
     # than the minimum distance.
     # The loop will run at most six times due to the fact the distance between
-    # the two y-coordinates will be bounded by a height of 2*half_width and
+    # the two y-coordinates will be bounded by a height of 2*half_width and a
     # width of 1*half_width.
     for idx_u in range(len_k - 1):
         for idx_v in range(idx_u + 1, min(idx_u + 4, len_k)):
@@ -83,7 +82,8 @@ def fast_closest_pair(cluster_list):
     @param list List of Cluster objects.
 
     @return tuple (dist, idx1, idx2) Dist is the distance between the closest
-      pair in the cluster_list parameter cluster_list[idx1], cluster_list[idx2].
+      pair in the cluster_list parameter. idx1 and idx2 represent 
+      cluster_list[idx1], cluster_list[idx2].
     """
     list_len = len(cluster_list)
 
@@ -95,11 +95,12 @@ def fast_closest_pair(cluster_list):
     middle_idx = int(round(list_len / 2))
 
     # Calculate the closest pair on the left half of the list.
-    closest_pair_left = fast_closest_pair(cluster_list[0:middle_idx - 1])
+    closest_pair_left = fast_closest_pair(cluster_list[0:middle_idx])
 
     # Calculate the closest pair on the right half of the list.
     closest_pair_right = fast_closest_pair(
-        cluster_list[middle_idx:list_len - 1])
+        cluster_list[middle_idx:list_len])
+
     # Adjust indices on the right side of list.
     closest_pair_right = (
         closest_pair_right[0], closest_pair_right[1] + middle_idx, closest_pair_right[2] + middle_idx)
@@ -108,9 +109,12 @@ def fast_closest_pair(cluster_list):
         [closest_pair_left, closest_pair_right], key=lambda x: x[0])
     horiz_center = (cluster_list[middle_idx - 1].horiz_center() +
                     cluster_list[middle_idx].horiz_center()) / 2
-    print('Closest pair distance:', closest_pair[0])
-    closest_pair = min([closest_pair, closest_pair_strip(
-        cluster_list, horiz_center, closest_pair[0])], key=lambda x: x[0])
+    stripped_closest_pair = closest_pair_strip(
+        cluster_list, horiz_center, closest_pair[0])
+
+    closest_pair = min(
+        [closest_pair, stripped_closest_pair], key=lambda x: x[0])
+
     return closest_pair
 
 
