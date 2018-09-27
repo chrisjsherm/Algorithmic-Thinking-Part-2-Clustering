@@ -1,3 +1,4 @@
 {
-  "python.pythonPath": "${env:PYTHON_INSTALL_LOCATION}\\envs\\riceu\\python.exe"
+  "python.pythonPath": "${env:PYTHON_HOME}\\envs\\riceu\\python.exe"
+  // "python.pythonPath": "${PYTHON_HOME}/envs/riceu/python"
 }
