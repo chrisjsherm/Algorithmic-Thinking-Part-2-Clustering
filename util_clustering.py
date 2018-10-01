@@ -192,10 +192,50 @@ def compare_y(cluster_1, cluster_2):
     Compare Y coordinates between two Cluster objects.
 
     @param array [idx in list, Cluster to compare]
-    @param array [idx, in list, Cluster to compare]
+    @param array [idx in list, Cluster to compare]
 
     @return int Positive if cluster_1 is greater than cluster_2.
         Negative if cluster_2 is greater than cluster_1.
         Zero is the clusters are equal.
     """
     return cluster_1[1].vert_center() - cluster_2[1].vert_center()
+
+def compare_x(cluster_1, cluster_2):
+    """
+    Compare X coordinates between two Cluster objects.
+
+    @param Cluster Cluster to compare.
+    @param Cluster Cluster to compare.
+
+    @return int Positive if cluster_1's x-coordinate is greater than cluster_2's.
+        Negative if cluster_2's x-coordinate is greater than cluster_1's.
+        Zero if the cluster's x-coordinates are equal.
+    """
+    return cluster_1.horiz_center() - cluster_2.horiz_center()
+
+
+def hierarchical_clustering(cluster_list, num_clusters):
+    """
+    Takes a list of Cluster objects and applies the hierarchical clustering
+    algorithm. The clustering process proceeds until num_clusters remain.
+
+    @param array Cluster objects.
+    @param int Number of clusters to condense cluster_list into.
+
+    @return array Cluster objects.
+    """
+    while len(cluster_list) != num_clusters:
+        # Find the closest pair of clusters
+        closest_pair = fast_closest_pair(cluster_list)
+
+        # Remove the second cluster of the pair from cluster_list.
+        cluster_to_merge = cluster_list.pop(closest_pair[2])
+        
+        # Merge the closest pair of clusters.
+        cluster_list[closest_pair[1]].merge_clusters(cluster_to_merge)
+
+        # Clusters passed to fast_closest_pair must be in horizontal sorted order.
+        # Therefore, re-sort list of clusters after each merge of clusters.
+        merge_sort(cluster_list, 0, len(cluster_list) - 1, compare_x)    
+
+    return cluster_list
