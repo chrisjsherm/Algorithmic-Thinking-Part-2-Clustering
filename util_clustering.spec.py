@@ -17,9 +17,9 @@ class TestUtilClustering(unittest.TestCase):
         Run before each test.
         Each test method must begin with "test_".
         """
-        cluster1 = Cluster([32001, 32013, 32031], 2, 2, 400, .1)
-        cluster2 = Cluster([51121, 51155, 51161], 0, 0, 600, .2)
-        cluster3 = Cluster([51059, 51013, 51107], -2, -2, 800, .3)
+        cluster1 = Cluster(set([32001, 32013, 32031]), 2, 2, 400, .1)
+        cluster2 = Cluster(set([51121, 51155, 51161]), 0, 0, 600, .2)
+        cluster3 = Cluster(set([51059, 51013, 51107]), -2, -2, 800, .3)
         self._cluster_list = [cluster1, cluster2, cluster3]
         self._compare_func = lambda x1, x2: x1 - x2
 
@@ -130,6 +130,107 @@ class TestUtilClustering(unittest.TestCase):
         cluster_1 = [2, Cluster([22152], -2, -4, 0, 0)]
         cluster_2 = [4, Cluster([90210], 0, 2, 0, 0)]
         self.assertEqual(util_clustering.compare_y(cluster_1, cluster_2), -6)
+
+    def test_compare_x(self):
+        cluster_1 = Cluster([22152], -2, 2, 0, 0)
+        cluster_2 = Cluster([90210], 0, 0, 0, 0)
+        self.assertEqual(util_clustering.compare_x(cluster_1, cluster_2), -2)
+
+        cluster_1 = Cluster([22152], -2, 2, 0, 0)
+        cluster_2 = Cluster([90210], -2, 2, 0, 0)
+        self.assertEqual(util_clustering.compare_x(cluster_1, cluster_2), 0)
+
+        cluster_1 = Cluster([22152], -2, -4, 0, 0)
+        cluster_2 = Cluster([90210], -4, 2, 0, 0)
+        self.assertEqual(util_clustering.compare_x(cluster_1, cluster_2), 2)
+
+    def test_are_clusters_equal(self):
+        self.assertFalse(util_clustering.are_clusters_equal(
+            self._cluster_list[0], self._cluster_list[1]))
+
+        self.assertFalse(util_clustering.are_clusters_equal(self._cluster_list[0],
+                                                            Cluster(set([32001, 32013, 32041]), 2, 2, 400, .1)))
+
+        self.assertFalse(util_clustering.are_clusters_equal(self._cluster_list[0],
+                                                            Cluster(set([32001, 32013, 32041]), 3, 2, 400, .1)))
+
+        self.assertFalse(util_clustering.are_clusters_equal(self._cluster_list[0],
+                                                            Cluster(set([32001, 32013, 32041]), 3, 5, 400, .1)))
+
+        self.assertFalse(util_clustering.are_clusters_equal(self._cluster_list[0],
+                                                            Cluster(set([32001, 32013, 32041]), 3, 2, 425, .1)))
+
+        self.assertFalse(util_clustering.are_clusters_equal(self._cluster_list[0],
+                                                            Cluster(set([32001, 32013, 32041]), 3, 2, 400, 1.1)))
+
+        self.assertTrue(util_clustering.are_clusters_equal(
+            self._cluster_list[0], Cluster(set([32001, 32013, 32031]), 2, 2, 400, .1)))
+
+    def test_are_cluster_lists_equal(self):
+        self.assertFalse(util_clustering.are_cluster_lists_equal(
+            self._cluster_list,
+            [Cluster(set([32001, 32133, 32031]), 2, 2, 400, .1),
+             Cluster(set([51121, 51155, 51161]), 0, 0, 600, .2),
+             Cluster(set([51059, 51013, 51107]), -2, -2, 800, .3)]))
+
+        self.assertFalse(util_clustering.are_cluster_lists_equal(
+            self._cluster_list,
+            [Cluster(set([32001, 32013, 32031]), 2, 2, 400, .1),
+             Cluster(set([51121, 51155, 51161]), 0, 0, 600, .2),
+             Cluster(set([51059, 51013, 51107]), -2, -2, 1200, .3)]))
+
+        self.assertFalse(util_clustering.are_cluster_lists_equal(
+            self._cluster_list,
+            [Cluster(set([51121, 51155, 51161]), -7, 3, 600, .2),
+             Cluster(set([32001, 32013, 32031]), 2, 2, 400, .1),
+             Cluster(set([51121, 51155, 51161]), 0, 0, 600, .2),
+             Cluster(set([51059, 51013, 51107]), -2, -2, 800, .3)]))
+
+        self.assertTrue(util_clustering.are_cluster_lists_equal(
+            self._cluster_list,
+            [Cluster(set([32001, 32013, 32031]), 2, 2, 400, .1),
+             Cluster(set([51121, 51155, 51161]), 0, 0, 600, .2),
+             Cluster(set([51059, 51013, 51107]), -2, -2, 800, .3)]))
+
+    def test_hierarchical_clustering(self):
+        cluster_list = util_clustering.hierarchical_clustering(
+            self._cluster_list, 2)
+        comparison_cluster_list = [
+            Cluster(set([32001, 32013, 32031, 51121, 51155, 51161]),
+                    0.8, 0.8, 1000, 0.16),
+            Cluster(set([51059, 51013, 51107]), -2, -2, 800, .3)]
+        self.assertTrue(cluster_list, comparison_cluster_list)
+
+        # cluster1 = Cluster(set([51121, 51155, 51161]), -7, 3, 600, .2)
+        # cluster2 = Cluster(set([51059, 51013, 51107]), -1, 1, 800, .3)
+        # cluster3 = Cluster(set([51121, 51155, 51161]), 3, 6, 800, .2)
+        # cluster4 = Cluster(set([32001, 32013, 32031]), 3, 5, 400, .1)
+        # cluster5 = Cluster(set([32001, 32013, 32031]), 4, 6, 400, .1)
+        # cluster_list_2 = [cluster1, cluster2, cluster3, cluster4, cluster5]
+        # self.assertEqual(util_clustering.hierarchical_clustering(
+        #     cluster_list_2, 3),
+        #     [
+        #         Cluster(set[51121, 51155, 51161]), -7, 3, 600, .2),
+        #         Cluster(set[51059, 51013, 51107]), -1, 1, 800, .3),
+        #         Cluster(set[51121, 51155, 51161]), 32001, 32013, 32031, 32001, 32013, 32031],
+        #                 6.5, 8.5, 1600, .2)
+        # ])
+
+        # cluster_list_3 = [Cluster(set([90210]), 0.38, 0.26, 1, 0),
+        #                   Cluster(set([36201]), 0.42, 0.03, 1, 0),
+        #                   Cluster(set([36202]), 0.48, 0.23, 1, 0),
+        #                   Cluster(set([36203]), 0.8, 0.65, 1, 0),
+        #                   Cluster(set([36204]), 0.95, 0.85, 1, 0),
+        #                   Cluster(set([36205]), 0.97, 0.61, 1, 0)]
+        # self.assertEqual(util_clustering.hierarchical_clustering(
+        #     cluster_list_3, 6), [
+        #         Cluster(set([90210]), 0.38, 0.26, 1, 0),
+        #         Cluster(set([36201]), 0.42, 0.03, 1, 0),
+        #         Cluster(set([36202]), 0.48, 0.23, 1, 0),
+        #         Cluster(set([36203]), 0.8, 0.65, 1, 0),
+        #         Cluster(set([36204]), 0.95, 0.85, 1, 0),
+        #         Cluster(set([36205]), 0.97, 0.61, 1, 0)]
+        # ])
 
 
 test_suite = unittest.TestLoader().loadTestsFromTestCase(TestUtilClustering)

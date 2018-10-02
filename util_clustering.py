@@ -200,6 +200,7 @@ def compare_y(cluster_1, cluster_2):
     """
     return cluster_1[1].vert_center() - cluster_2[1].vert_center()
 
+
 def compare_x(cluster_1, cluster_2):
     """
     Compare X coordinates between two Cluster objects.
@@ -212,6 +213,50 @@ def compare_x(cluster_1, cluster_2):
         Zero if the cluster's x-coordinates are equal.
     """
     return cluster_1.horiz_center() - cluster_2.horiz_center()
+
+
+def are_clusters_equal(cluster_1, cluster_2):
+    """
+    Compare two Cluster objects to see if they have identical property values.
+
+    @param Cluster Cluster to compare.
+    @param Cluster Cluster to compare.
+
+    @return boolean True if the clusters have identical property values.
+        False otherwise.
+    """
+    if cluster_1 == None or cluster_2 == None:
+        return False
+
+    if cluster_1.fips_codes() == cluster_2.fips_codes() and \
+            cluster_1.horiz_center() == cluster_2.horiz_center() and \
+            cluster_1.vert_center() == cluster_2.vert_center() and \
+            cluster_1.total_population() == cluster_2.total_population() and \
+            cluster_1.averaged_risk() == cluster_2.averaged_risk():
+        return True
+
+    return False
+
+def are_cluster_lists_equal(cluster_list_1, cluster_list_2):
+    """
+    Compare two lists of Cluster objects to see if they contain Cluster objects
+    with identical property values.
+
+    @param Cluster List of Clusters to compare.
+    @param Cluster List of Clusters to compare.
+
+    @return boolean True the lists contain Cluster objects with identical values.
+        False otherwise.
+    """
+    if len(cluster_list_1) != len(cluster_list_2):
+        return False
+
+    for idx in range(len(cluster_list_1)):
+        if not are_clusters_equal(cluster_list_1[idx], cluster_list_2[idx]):
+            return False
+
+    return True
+
 
 
 def hierarchical_clustering(cluster_list, num_clusters):
@@ -230,12 +275,12 @@ def hierarchical_clustering(cluster_list, num_clusters):
 
         # Remove the second cluster of the pair from cluster_list.
         cluster_to_merge = cluster_list.pop(closest_pair[2])
-        
+
         # Merge the closest pair of clusters.
         cluster_list[closest_pair[1]].merge_clusters(cluster_to_merge)
 
         # Clusters passed to fast_closest_pair must be in horizontal sorted order.
         # Therefore, re-sort list of clusters after each merge of clusters.
-        merge_sort(cluster_list, 0, len(cluster_list) - 1, compare_x)    
+        merge_sort(cluster_list, 0, len(cluster_list) - 1, compare_x)
 
     return cluster_list
