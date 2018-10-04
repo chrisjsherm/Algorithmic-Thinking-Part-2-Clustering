@@ -196,25 +196,29 @@ class TestUtilClustering(unittest.TestCase):
         cluster_list = util_clustering.hierarchical_clustering(
             self._cluster_list, 2)
         comparison_cluster_list = [
+            Cluster(set([51059, 51013, 51107]), -2, -2, 800, .3),
             Cluster(set([32001, 32013, 32031, 51121, 51155, 51161]),
-                    0.8, 0.8, 1000, 0.16),
-            Cluster(set([51059, 51013, 51107]), -2, -2, 800, .3)]
-        self.assertTrue(cluster_list, comparison_cluster_list)
+                    0.8, 0.8, 1000, 0.16)
+        ]
+        self.assertTrue(util_clustering.are_cluster_lists_equal(
+            cluster_list, comparison_cluster_list
+        ))
 
-        # cluster1 = Cluster(set([51121, 51155, 51161]), -7, 3, 600, .2)
-        # cluster2 = Cluster(set([51059, 51013, 51107]), -1, 1, 800, .3)
-        # cluster3 = Cluster(set([51121, 51155, 51161]), 3, 6, 800, .2)
-        # cluster4 = Cluster(set([32001, 32013, 32031]), 3, 5, 400, .1)
-        # cluster5 = Cluster(set([32001, 32013, 32031]), 4, 6, 400, .1)
-        # cluster_list_2 = [cluster1, cluster2, cluster3, cluster4, cluster5]
-        # self.assertEqual(util_clustering.hierarchical_clustering(
-        #     cluster_list_2, 3),
-        #     [
-        #         Cluster(set[51121, 51155, 51161]), -7, 3, 600, .2),
-        #         Cluster(set[51059, 51013, 51107]), -1, 1, 800, .3),
-        #         Cluster(set[51121, 51155, 51161]), 32001, 32013, 32031, 32001, 32013, 32031],
-        #                 6.5, 8.5, 1600, .2)
-        # ])
+        cluster1 = Cluster(set([51121, 51155, 51161]), -7, 3, 600, .2)
+        cluster2 = Cluster(set([51059, 51013, 51107]), -1, 1, 800, .3)
+        cluster3 = Cluster(set([51121, 51155, 51161]), 3, 6, 900, .4)
+        cluster4 = Cluster(set([32001, 32013, 32031]), 3, 9, 300, .8)
+        cluster_list_2 = [cluster1, cluster2, cluster3, cluster4]
+        cluster_list_2_processed = util_clustering.hierarchical_clustering(
+            cluster_list_2, 3)
+        comparison_cluster_list = [
+            Cluster(set([51121, 51155, 51161]), -7, 3, 600, .2),
+            Cluster(set([51059, 51013, 51107]), -1, 1, 800, .3),
+            Cluster(
+                set([51121, 51155, 51161, 32001, 32013, 32031]), 3, 6.75, 1200, .5)
+        ]
+        self.assertTrue(util_clustering.are_cluster_lists_equal(
+            cluster_list_2_processed, comparison_cluster_list))
 
         # cluster_list_3 = [Cluster(set([90210]), 0.38, 0.26, 1, 0),
         #                   Cluster(set([36201]), 0.42, 0.03, 1, 0),
