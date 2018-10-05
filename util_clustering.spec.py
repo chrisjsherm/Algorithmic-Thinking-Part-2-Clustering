@@ -220,22 +220,6 @@ class TestUtilClustering(unittest.TestCase):
         self.assertTrue(util_clustering.are_cluster_lists_equal(
             cluster_list_2_processed, comparison_cluster_list))
 
-        # cluster_list_3 = [Cluster(set([90210]), 0.38, 0.26, 1, 0),
-        #                   Cluster(set([36201]), 0.42, 0.03, 1, 0),
-        #                   Cluster(set([36202]), 0.48, 0.23, 1, 0),
-        #                   Cluster(set([36203]), 0.8, 0.65, 1, 0),
-        #                   Cluster(set([36204]), 0.95, 0.85, 1, 0),
-        #                   Cluster(set([36205]), 0.97, 0.61, 1, 0)]
-        # self.assertEqual(util_clustering.hierarchical_clustering(
-        #     cluster_list_3, 6), [
-        #         Cluster(set([90210]), 0.38, 0.26, 1, 0),
-        #         Cluster(set([36201]), 0.42, 0.03, 1, 0),
-        #         Cluster(set([36202]), 0.48, 0.23, 1, 0),
-        #         Cluster(set([36203]), 0.8, 0.65, 1, 0),
-        #         Cluster(set([36204]), 0.95, 0.85, 1, 0),
-        #         Cluster(set([36205]), 0.97, 0.61, 1, 0)]
-        # ])
-
 
 test_suite = unittest.TestLoader().loadTestsFromTestCase(TestUtilClustering)
 unittest.TextTestRunner(verbosity=2).run(test_suite)

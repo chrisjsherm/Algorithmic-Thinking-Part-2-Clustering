@@ -74,6 +74,7 @@ def closest_pair_strip(cluster_list, horiz_center, half_width):
 
 def fast_closest_pair(cluster_list):
     """
+    Clusters passed to fast_closest_pair must be in horizontal sorted order.
     Takes a list of Cluster objects and returns a closest pair where the pair is
     represented by a tuple (dist, idx1, idx2) with idx1 < idx2 where dist is the
     distance between the closest pair cluster_list[idx1] and cluster_list[idx2].
@@ -237,6 +238,7 @@ def are_clusters_equal(cluster_1, cluster_2):
 
     return False
 
+
 def are_cluster_lists_equal(cluster_list_1, cluster_list_2):
     """
     Compare two lists of Cluster objects to see if they contain Cluster objects
@@ -258,7 +260,6 @@ def are_cluster_lists_equal(cluster_list_1, cluster_list_2):
     return True
 
 
-
 def hierarchical_clustering(cluster_list, num_clusters):
     """
     Takes a list of Cluster objects and applies the hierarchical clustering
@@ -269,18 +270,20 @@ def hierarchical_clustering(cluster_list, num_clusters):
 
     @return array Cluster objects.
     """
-    while len(cluster_list) != num_clusters:
+    # Clusters passed to fast_closest_pair must be in horizontal sorted order.
+    merge_sort(cluster_list, 0, len(cluster_list) - 1, compare_x)
+
+    while len(cluster_list) > num_clusters:
         # Find the closest pair of clusters
         closest_pair = fast_closest_pair(cluster_list)
 
-        # Remove the second cluster of the pair from cluster_list.
-        cluster_to_merge = cluster_list.pop(closest_pair[2])
+        # Grab the second cluster of the pair from cluster_list.
+        cluster_to_merge = cluster_list[closest_pair[2]]
 
         # Merge the closest pair of clusters.
         cluster_list[closest_pair[1]].merge_clusters(cluster_to_merge)
 
-        # Clusters passed to fast_closest_pair must be in horizontal sorted order.
-        # Therefore, re-sort list of clusters after each merge of clusters.
-        merge_sort(cluster_list, 0, len(cluster_list) - 1, compare_x)
+        # Remove the second cluster of the pair from cluster_list.
+        cluster_list.pop(closest_pair[2])
 
     return cluster_list
