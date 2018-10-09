@@ -2,7 +2,6 @@
 Clustering utility for Rice University Algorithmic Thinking Part II: Project 3.
 """
 from alg_cluster import Cluster
-import heapq
 
 
 def slow_closest_pair(cluster_list):
@@ -310,9 +309,8 @@ def kmeans_clustering(cluster_list, num_clusters, num_iterations):
                          'length of cluster_list.')
 
     # Initialize the old clusters by selecting the largest population counties.
-    # TODO: Implement heapq.nlargest for CodeSkuptor.
-    old_clusters = heapq.nlargest(
-        num_clusters, cluster_list, key=lambda x: x.total_population())
+    old_clusters = sorted(
+        cluster_list, key=lambda x: x.total_population(), reverse=True)[:num_clusters]
 
     # Perform the k-means algorithm for the supplied number of iterations.
     for dummy_iter in range(0, num_iterations):
