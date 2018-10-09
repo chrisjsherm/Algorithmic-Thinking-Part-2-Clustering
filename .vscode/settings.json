@@ -1,4 +1,12 @@
 {
-  "python.pythonPath": "C:\\Users\\Chris\\Miniconda3\\envs\\riceu\\python.exe"
-  // "python.pythonPath": "${PYTHON_HOME}/envs/riceu/python"
+  "python.pythonPath": "C:\\Users\\Chris\\Miniconda3\\envs\\riceu\\python.exe",
+  // "python.pythonPath": "${PYTHON_HOME}/envs/riceu/python",
+
+  "cSpell.ignoreWords": [
+    "fips",    
+    "heapq",
+    "horiz",
+    "kmeans",
+    "nlargest"
+  ]
 }

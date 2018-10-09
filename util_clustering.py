@@ -1,6 +1,8 @@
 """
 Clustering utility for Rice University Algorithmic Thinking Part II: Project 3.
 """
+from alg_cluster import Cluster
+import heapq
 
 
 def slow_closest_pair(cluster_list):
@@ -287,3 +289,83 @@ def hierarchical_clustering(cluster_list, num_clusters):
         cluster_list.pop(closest_pair[2])
 
     return cluster_list
+
+
+def kmeans_clustering(cluster_list, num_clusters, num_iterations):
+    """
+    Takes a list of Cluster objects and applies the k-means clustering algorithm.
+
+    @param list Cluster objects.
+    @param int Number of clusters to condense cluster_list into.
+    @param int Number of iterations to perform the k-means clustering algorithm.
+
+    @return list Cluster objects.
+    """
+    n_clusters = len(cluster_list)
+
+    # Ensure the size of cluster_list is at least equal to the number of
+    # clusters to create.
+    if n_clusters < num_clusters:
+        raise ValueError('num_clusters must be less than or equal to the ' +
+                         'length of cluster_list.')
+
+    # Initialize the old clusters by selecting the largest population counties.
+    # TODO: Implement heapq.nlargest for CodeSkuptor.
+    old_clusters = heapq.nlargest(
+        num_clusters, cluster_list, key=lambda x: x.total_population())
+
+    # Perform the k-means algorithm for the supplied number of iterations.
+    for dummy_iter in range(0, num_iterations):
+        # Initialize groups to add clusters to.
+        cluster_groups = [[] for dummy_idx in range(0, num_clusters)]
+
+        # For each county in cluster_list.
+        for idx_j in range(0, n_clusters):
+            # Find the old cluster center that is closest to the current county.
+            closest_cluster_idx = min_dist_to_cluster(
+                old_clusters, cluster_list[idx_j])
+
+            # Add the county to the corresponding cluster_group.
+            cluster_groups[closest_cluster_idx].append(cluster_list[idx_j])
+
+        # Transform the cluster_groups into new clusters.
+        for idx_i in range(0, num_clusters):
+            # Create a new Cluster from the first cluster in the group.
+            new_cluster = cluster_groups[idx_i][0].copy()
+
+            # If more than one cluster in a group, merge into the first
+            # cluster in the group.
+            for idx_j in range(1, len(cluster_groups[idx_i])):
+                new_cluster.merge_clusters(
+                    cluster_groups[idx_i][idx_j])
+
+            # Set the cluster group equal to the first cluster.
+            cluster_groups[idx_i] = new_cluster
+
+        # Set the old clusters equal to the new clusters.
+        old_clusters = cluster_groups
+
+    # Return the new clusters.
+    return old_clusters
+
+
+def min_dist_to_cluster(cluster_list, compare_cluster):
+    """
+    Takes a list of clusters and returns the index with the minimum distance
+    to the compare_cluster.
+
+    @param list Cluster objects.
+    @param Cluster Cluster to compare the list to.
+
+    @return int Index of the Cluster with the minimum distance to the
+        compare_cluster.
+    """
+    min_dist = float('inf')
+    idx = -1
+    for idx_i in range(0, len(cluster_list)):
+        dist = cluster_list[idx_i].distance(compare_cluster)
+        if dist < min_dist:
+            min_dist = dist
+            idx = idx_i
+
+    return idx
