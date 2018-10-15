@@ -10,12 +10,12 @@ import util_clustering
 class TestUtilClustering(unittest.TestCase):
     """
     Unit tests for clustering utility.
+    Each test method must begin with "test_".
     """
 
     def setUp(self):
         """
         Run before each test.
-        Each test method must begin with "test_".
         """
         cluster1 = Cluster(set([32001, 32013, 32031]), 2, 2, 400, .1)
         cluster2 = Cluster(set([51121, 51155, 51161]), 0, 0, 600, .2)

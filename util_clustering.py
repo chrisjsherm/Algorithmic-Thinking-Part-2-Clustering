@@ -1,7 +1,6 @@
 """
 Clustering utility for Rice University Algorithmic Thinking Part II: Project 3.
 """
-from alg_cluster import Cluster
 
 
 def slow_closest_pair(cluster_list):
