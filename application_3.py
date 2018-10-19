@@ -33,14 +33,21 @@ def main():
     n_incr = 1
     n_tests = 3
 
-    plot_time_complexity(slow_closest_pair_trial, n_min, n_max, n_incr, n_tests)
-    plot_time_complexity(fast_closest_pair_trial, n_min, n_max, n_incr, n_tests)
+    plot_time_complexity(slow_closest_pair_trial,
+                         n_min, n_max, n_incr, n_tests)
+    plot_time_complexity(fast_closest_pair_trial,
+                         n_min, n_max, n_incr, n_tests)
 
-    # show plot
-    pyplot.legend(loc='upper right')
+    # Configure plot.
+    pyplot.legend(loc='lower right')
+    pyplot.title('Closest Pair Algorithm Running Time (Desktop Python)')
+    pyplot.xlabel('Number of Initial Clusters')
+    pyplot.ylabel('Running Time (seconds)')
+
+    # Show plot.
     pyplot.show()
 
 
-# call main
+# Call main.
 if __name__ == '__main__':
     main()
