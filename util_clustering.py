@@ -1,7 +1,7 @@
 """
 Clustering utility for Rice University Algorithmic Thinking Part II: Project 3.
 """
-
+from alg_project3_viz import load_data_table, DATA_290_URL
 
 def slow_closest_pair(cluster_list):
     """
@@ -366,3 +366,21 @@ def min_dist_to_cluster(cluster_list, compare_cluster):
             idx = idx_i
 
     return idx
+
+
+def compute_distortion(cluster_list, data_table):
+    """
+    Takes a list of clusters and uses the Cluster cluster_error method to
+    compute the list's distortion.
+
+    @param list Cluster objects.
+    @param list Data from which Clusters are generated.
+
+    @return float Sum of squares distance from each county to its cluster's
+        center.
+    """
+    distortion = 0
+    for cluster in cluster_list:
+        distortion += cluster.cluster_error(data_table)
+
+    return distortion

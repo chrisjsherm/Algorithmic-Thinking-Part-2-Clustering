@@ -1,0 +1,1 @@
+For the data set with 111 points, the hierarchical clustering algorithm consistently produces clusters with lower distortion. For larger data sets, the results are mixed, with each algorithm producing clusters with distortion levels near the same level as the other algorithm. 
